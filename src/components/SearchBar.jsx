@@ -5,13 +5,12 @@ const SearchBar = () => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
 
-  // Function to handle API call
   const handleSearch = async (e) => {
     setQuery(e.target.value);
     
     if (e.target.value.length > 2) {
       try {
-        const token = "SPOTIFY_CLIENT_SECRET"; // Store this securely
+        const token = "SPOTIFY_CLIENT_SECRET";
         const response = await axios.get(
           `https://api.spotify.com/v1/search?q=${e.target.value}&type=album,artist,track`,
           {
@@ -20,7 +19,7 @@ const SearchBar = () => {
             },
           }
         );
-        setResults(response.data.tracks.items); // Set the correct data here based on search type
+        setResults(response.data.tracks.items);
       } catch (error) {
         console.error("Error fetching data from Spotify API", error);
       }
