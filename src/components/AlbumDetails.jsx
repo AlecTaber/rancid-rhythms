@@ -6,6 +6,7 @@ const AlbumDetails = () => {
   const location = useLocation();
   const [album, setAlbum] = useState(location.state?.album || {});
   const [previewUrl, setPreviewUrl] = useState('');
+  const [isFetchingPreview, setIsFetchingPreview] = useState(false);
 
   useEffect(() => {
     if (!album.id) {
@@ -14,25 +15,28 @@ const AlbumDetails = () => {
         .then((response) => response.json())
         .then((data) => {
           setAlbum(data);
-          // Fetch preview URL from iTunes
+          // Fetch preview from iTunes
           fetchPreview(data.title, data["artist-credit"]?.[0]?.name);
         });
     } else {
-      // Fetch preview URL from iTunes using passed album data
+      // Fetch preview from iTunes using passed album data
       fetchPreview(album.title, album["artist-credit"]?.[0]?.name);
     }
   }, [id, album]);
 
   const fetchPreview = async (albumTitle, artistName) => {
+    setIsFetchingPreview(true);
     try {
       const response = await fetch(
-        `https://itunes.apple.com/search?term=${encodeURIComponent(albumTitle)} ${encodeURIComponent(artistName)}&entity=album`
+        `https://itunes.apple.com/search?term=${encodeURIComponent(albumTitle)} ${encodeURIComponent(artistName)}&entity=song`
       );
       const data = await response.json();
       const previewTrack = data.results?.[0]?.previewUrl;
       setPreviewUrl(previewTrack || '');
     } catch (error) {
       console.error("Error fetching preview from iTunes:", error);
+    } finally {
+      setIsFetchingPreview(false);
     }
   };
 
@@ -45,10 +49,11 @@ const AlbumDetails = () => {
         className="w-64 h-64 object-cover mb-4"
       />
       <button
-        onClick={() => setPreviewUrl(previewUrl)}
+        onClick={() => fetchPreview(album.title, album["artist-credit"]?.[0]?.name)}
         className="bg-blue-500 text-white p-2 rounded"
+        disabled={isFetchingPreview}
       >
-        Listen to a Sample
+        {isFetchingPreview ? 'Loading Sample...' : 'Listen to a Sample'}
       </button>
       {previewUrl && (
         <audio controls>
