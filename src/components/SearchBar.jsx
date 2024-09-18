@@ -71,7 +71,7 @@ const SearchBar = () => {
 
       {isDropdownOpen && results.length > 0 && (
         <ul
-          ref={dropdownRef} // Add ref here to the dropdown
+          ref={dropdownRef}
           className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto"
         >
           {results.map((album) => (
@@ -86,7 +86,7 @@ const SearchBar = () => {
                 className="w-12 h-12 object-cover mr-4"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = "/placeholder-image.jpg"; // Fallback image
+                  e.target.src = "/placeholder-image.jpg";
                 }}
               />
               <div className="flex flex-col">
