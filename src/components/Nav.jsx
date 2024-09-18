@@ -4,15 +4,15 @@ import SearchBar from './SearchBar';
 
 const Nav = () => {
   return (
-    <nav className="bg-green-700">
+    <nav className="bg-green-700 p-4">
       <div className="container mx-auto flex justify-end">
         <ul className="flex space-x-4 mr-4">
             <SearchBar />
             <li>
-            <NavLink to="/">Home</NavLink>
+            <NavLink to="/" className="text-3xl hover:text-green-200">Home</NavLink>
             </li>
             <li>
-            <NavLink to="/profile">Profile</NavLink>
+            <NavLink to="/profile" className="text-3xl hover:text-green-200">Profile</NavLink>
             </li>
         </ul>
       </div>

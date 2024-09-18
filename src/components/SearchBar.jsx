@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const navigate = useNavigate();
+  const dropdownRef = useRef(null);
 
   const fetchAlbums = async (query) => {
     try {
@@ -14,6 +16,7 @@ const SearchBar = () => {
       );
       const data = await response.json();
       setResults(data.releases || []);
+      setIsDropdownOpen(true);
     } catch (error) {
       console.error("Error fetching albums from MusicBrainz:", error);
     }
@@ -31,7 +34,22 @@ const SearchBar = () => {
 
   const handleAlbumClick = (album) => {
     navigate(`/album/${album.id}`, { state: { album } });
+    setIsDropdownOpen(false);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="relative w-full max-w-lg mx-auto">
@@ -51,10 +69,11 @@ const SearchBar = () => {
         </button>
       </form>
 
-      {isLoading && <p className="mt-4 text-gray-500">Loading...</p>}
-
-      {results.length > 0 && (
-        <ul className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
+      {isDropdownOpen && results.length > 0 && (
+        <ul
+          ref={dropdownRef} // Add ref here to the dropdown
+          className="absolute z-10 w-full mt-2 bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto"
+        >
           {results.map((album) => (
             <li
               key={album.id}
