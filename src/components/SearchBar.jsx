@@ -1,21 +1,21 @@
-
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const SearchBar = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [results, setResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  // Function to search for albums by artist's MBID (MusicBrainz ID)
-  const fetchAlbumsByArtist = async (artistId) => {
+  const fetchAlbums = async (query) => {
     try {
       const response = await fetch(
-        `https://musicbrainz.org/ws/2/release/?query=arid:${artistId}&fmt=json`
+        `https://musicbrainz.org/ws/2/release/?query=${encodeURIComponent(query)}&fmt=json`
       );
       const data = await response.json();
       setResults(data.releases || []);
     } catch (error) {
-      console.error("Error fetching albums by artist:", error);
+      console.error("Error fetching albums from MusicBrainz:", error);
     }
   };
 
@@ -24,54 +24,13 @@ const SearchBar = () => {
     setIsLoading(true);
     setResults([]);
 
-    const queryParts = searchQuery.split(" by ");
-
-    if (queryParts.length === 2) {
-      // Case: Searching for both album and artist
-      const albumTitle = queryParts[0].trim();
-      const artistName = queryParts[1].trim();
-      const query = `release:"${albumTitle}" AND artist:"${artistName}"`;
-
-      try {
-        const response = await fetch(
-          `https://musicbrainz.org/ws/2/release/?query=${encodeURIComponent(query)}&fmt=json`
-        );
-        const data = await response.json();
-        setResults(data.releases || []);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    } else {
-      // Case: Searching for either an album or artist
-      const searchTerm = searchQuery.trim();
-      const albumQuery = `release:"${searchTerm}"`;
-      const artistQuery = `artist:"${searchTerm}"`;
-
-      try {
-        // First, search if the input matches any artist
-        const artistResponse = await fetch(
-          `https://musicbrainz.org/ws/2/artist/?query=${encodeURIComponent(artistQuery)}&fmt=json`
-        );
-        const artistData = await artistResponse.json();
-
-        if (artistData.artists && artistData.artists.length > 0) {
-          // If an artist is found, fetch albums by that artist
-          const artistId = artistData.artists[0].id;
-          fetchAlbumsByArtist(artistId);
-        } else {
-          // If no artist is found, search for an album instead
-          const albumResponse = await fetch(
-            `https://musicbrainz.org/ws/2/release/?query=${encodeURIComponent(albumQuery)}&fmt=json`
-          );
-          const albumData = await albumResponse.json();
-          setResults(albumData.releases || []);
-        }
-      } catch (error) {
-        console.error("Error fetching artist or album:", error);
-      }
-    }
+    await fetchAlbums(searchQuery);
 
     setIsLoading(false);
+  };
+
+  const handleAlbumClick = (album) => {
+    navigate(`/album/${album.id}`, { state: { album } });
   };
 
   return (
@@ -79,7 +38,7 @@ const SearchBar = () => {
       <form onSubmit={handleSearch} className="flex">
         <input
           type="text"
-          placeholder='Search for an album or artist (e.g., "Abbey Road by The Beatles")'
+          placeholder='Search for an album (e.g., "Abbey Road")'
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full p-2 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -100,7 +59,7 @@ const SearchBar = () => {
             <li
               key={album.id}
               className="flex items-center p-2 hover:bg-gray-100 cursor-pointer"
-              onClick={() => console.log("Album selected:", album)}
+              onClick={() => handleAlbumClick(album)}
             >
               <img
                 src={`https://coverartarchive.org/release/${album.id}/front`}
