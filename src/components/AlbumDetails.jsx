@@ -41,31 +41,62 @@ const AlbumDetails = () => {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">{album.title || 'Album Title'}</h1>
-      <img
-        src={`https://coverartarchive.org/release/${album.id}/front`}
-        alt={album.title}
-        className="w-64 h-64 object-cover mb-4"
-      />
-      <button
-        onClick={() => fetchPreview(album.title, album["artist-credit"]?.[0]?.name)}
-        className="bg-blue-500 text-white p-2 rounded"
-        disabled={isFetchingPreview}
-      >
-        {isFetchingPreview ? 'Loading Sample...' : 'Listen to a Sample'}
-      </button>
-      {previewUrl && (
-        <audio controls>
-          <source src={previewUrl} type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio>
-      )}
-      <button className="bg-green-500 text-white p-2 rounded mt-4">
-        Leave a Review
-      </button>
+    <div className="container mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6 bg-gradient-to-br from-green-600 to-green-200">
+      <div className="md:col-span-1 space-y-6">
+        <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">
+          <h2 className="text-xl font-semibold mb-4">Track List</h2>
+          <ul className="space-y-2">
+            <li>Track 1</li>
+            <li>Track 2</li>
+            <li>Track 3</li>
+            <li>Track 4</li>
+            <li>Track 5</li>
+          </ul>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">
+          <h2 className="text-xl font-semibold mb-4">Album Information</h2>
+          <p><strong>Artist:</strong> {album["artist-credit"]?.[0]?.name || 'Artist Name'}</p>
+          <p><strong>Release Date:</strong> {album.date || 'Release Date'}</p>
+        </div>
+      </div>
+
+      <div className="md:col-span-2 bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">
+        <h2 className="text-xl font-semibold mb-4">{album.title || 'Album Title'}</h2>
+        <img
+          src={`https://coverartarchive.org/release/${album.id}/front`}
+          alt={album.title}
+          className="w-112 h-112 object-cover rounded-lg mb-4"
+        />
+
+        {previewUrl ? (
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold mb-2">Preview</h3>
+            <audio controls src={previewUrl} className="w-full"></audio>
+          </div>
+        ) : (
+          <p className="text-gray-500">{isFetchingPreview ? 'Fetching preview...' : 'No preview available'}</p>
+        )}
+
+        <button
+          onClick={() => fetchPreview(album.title, album["artist-credit"]?.[0]?.name)}
+          className="w-full bg-blue-500 text-white p-2 rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
+        >
+          Fetch Preview Again
+        </button>
+      </div>
+
+      <div className="md:col-span-3 bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">
+        <h2 className="text-xl font-semibold mb-4">Reviews</h2>
+        <p>No reviews yet. Be the first to leave a review!</p>
+
+        <button className="mt-4 bg-green-500 text-white p-2 rounded-lg shadow-md hover:bg-green-600 transition duration-300">
+          Leave a Review
+        </button>
+      </div>
     </div>
   );
 };
 
 export default AlbumDetails;
+
