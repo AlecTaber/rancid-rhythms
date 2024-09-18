@@ -7,11 +7,13 @@ const fetchAlbums = async (type) => {
     return [
       { id: 1, name: "Hot Album 1", cover: "link_to_album_cover_1" },
       { id: 2, name: "Hot Album 2", cover: "link_to_album_cover_2" },
+      { id: 3, name: "Hot Album 3", cover: "link_to_album_cover_3" },
     ];
   } else if (type === "bad") {
     return [
       { id: 1, name: "Bad Album 1", cover: "link_to_album_cover_3" },
       { id: 2, name: "Bad Album 2", cover: "link_to_album_cover_4" },
+      { id: 3, name: "Bad Album 3", cover: "link_to_album_cover_5" },
     ];
   }
   return [];
