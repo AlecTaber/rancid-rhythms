@@ -102,7 +102,7 @@ const Body = ({ section }) => {
         <section className="p-8 bg-green-50">
           <h2 className="text-3xl font-bold text-black mb-4">Your Profile</h2>
           <p className="text-lg text-black">
-            Here's where you can update your information!
+            Here's where you can see your reviews and other profile information.
           </p>
         </section>
       );
