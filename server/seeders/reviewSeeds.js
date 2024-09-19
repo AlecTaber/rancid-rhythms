@@ -1,5 +1,5 @@
 // seeders/[timestamp]-demo-reviews.js
-import { Review } from '../models/review.js'; // Adjust the import based on your setup
+import { Review } from '../models/review.js';
 
 export const up = async (queryInterface, Sequelize) => {
   await queryInterface.bulkInsert('reviews', [

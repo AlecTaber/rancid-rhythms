@@ -1,5 +1,5 @@
 // seeders/[timestamp]-demo-albums.js
-import { Album } from '../models/album.js'; // Adjust the import based on your setup
+import { Album } from '../models/album.js';
 
 export const up = async (queryInterface, Sequelize) => {
   await queryInterface.bulkInsert('albums', [

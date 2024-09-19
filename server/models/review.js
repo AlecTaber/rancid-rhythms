@@ -17,3 +17,5 @@ const Review = sequelize.define('review', {
         allowNull: false,
     },
 });
+
+export default Review;

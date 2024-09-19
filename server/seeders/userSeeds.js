@@ -1,6 +1,6 @@
 // seeders/[timestamp]-demo-users.js
 import bcrypt from 'bcrypt';
-import { User } from '../models/user.js'; // Adjust the import based on your setup
+import { User } from '../models/user.js';
 
 export const up = async (queryInterface, Sequelize) => {
   const hashedPassword1 = await bcrypt.hash('password123', 10);
