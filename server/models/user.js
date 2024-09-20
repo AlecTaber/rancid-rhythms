@@ -11,12 +11,12 @@ export default (sequelize, DataTypes) => {
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   });
 
   // Hash password before saving user
@@ -24,5 +24,10 @@ export default (sequelize, DataTypes) => {
     user.password = await bcrypt.hash(user.password, 10);
   });
 
+  User.associate = (models) => {
+    User.hasMany(models.Review, { foreignKey: 'userId', onDelete: 'CASCADE' });
+  };
+
   return User;
 };
+

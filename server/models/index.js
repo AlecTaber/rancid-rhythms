@@ -35,29 +35,28 @@ const models = fs
   });
 
 for (const file of models) {
-  // Convert the file path to a `file://` URL
   const modelPath = pathToFileURL(path.join(__dirname, file)).href;
-
-  // Dynamically import the model
   const { default: model } = await import(modelPath);
-
-  // Ensure that the model is a function and invoke it with sequelize and DataTypes
+  
   if (typeof model === 'function') {
-    const modelInstance = model(sequelize, Sequelize.DataTypes);  // Call the function to define the model
-    db[modelInstance.name] = modelInstance;  // Store the model instance in db
+    const modelInstance = model(sequelize, Sequelize.DataTypes);
+    db[modelInstance.name] = modelInstance;
   }
 }
 
+// Handle model associations
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
     db[modelName].associate(db);
   }
 });
 
+// Export the sequelize instance and models
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 
 export default db;
+
 
 
 
