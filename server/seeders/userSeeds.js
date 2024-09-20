@@ -1,21 +1,21 @@
-import db from '../models/index.js'; // Import the default export from models
-const { User } = db; // Extract User from the db object
-import bcrypt from 'bcrypt'; // Import bcrypt for hashing passwords
+import db from '../models/index.js';
+const { Review } = db;
 
 export const up = async () => {
-  const hashedPassword1 = await bcrypt.hash('password123', 10);
-  const hashedPassword2 = await bcrypt.hash('password456', 10);
-
-  await User.bulkCreate([
+  await Review.bulkCreate([
     {
-      username: 'john_doe',
-      password: hashedPassword1,
+      review: 'An incredible album that defined a generation.',
+      rating: 5,
+      userId: 1,  // Assume john_doe has ID 1
+      albumId: 1,  // Assume Abbey Road has ID 1
       createdAt: new Date(),
       updatedAt: new Date(),
     },
     {
-      username: 'jane_doe',
-      password: hashedPassword2,
+      review: 'A timeless classic with amazing production.',
+      rating: 4,
+      userId: 2,  // Assume jane_doe has ID 2
+      albumId: 2,  // Assume The Dark Side of the Moon has ID 2
       createdAt: new Date(),
       updatedAt: new Date(),
     },
