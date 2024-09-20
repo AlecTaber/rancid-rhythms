@@ -10,31 +10,31 @@ const AlbumDetails = () => {
   const [isFetchingPreview, setIsFetchingPreview] = useState(false);
 
   useEffect(() => {
-  if (!album.id) {
-    // Fetch album details from MusicBrainz if not passed in state
-    fetch(`https://musicbrainz.org/ws/2/release/${id}?fmt=json`)
-      .then((response) => response.json())
-      .then((data) => {
-        setAlbum(data);
-        // Only fetch preview after setting the album
-        fetchPreview(data.title, data["artist-credit"]?.[0]?.name);
-      });
-  }
-}, [id]);
+    if (!album.id) {
+      // Fetch album details from MusicBrainz if not passed in state
+      fetch(`https://musicbrainz.org/ws/2/release/${id}?fmt=json`)
+        .then((response) => response.json())
+        .then((data) => {
+          setAlbum(data);
+          // Only fetch preview after setting the album
+          fetchPreview(data.title, data["artist-credit"]?.[0]?.name);
+        });
+    }
+  }, [id]);
 
-useEffect(() => {
-  if (album.id) {
-    // Fetch preview from iTunes using passed album data
-    fetchPreview(album.title, album["artist-credit"]?.[0]?.name);
-  }
-}, [album]);
+  useEffect(() => {
+    if (album.id) {
+      // Fetch preview from iTunes using passed album data
+      fetchPreview(album.title, album["artist-credit"]?.[0]?.name);
+    }
+  }, [album]);
 
-useEffect(() => {
-  if (location.state?.album) {
-    setAlbum(location.state.album);
-    fetchPreview(location.state.album.title, location.state.album["artist-credit"]?.[0]?.name);
-  }
-}, [location.state]);
+  useEffect(() => {
+    if (location.state?.album) {
+      setAlbum(location.state.album);
+      fetchPreview(location.state.album.title, location.state.album["artist-credit"]?.[0]?.name);
+    }
+  }, [location.state]);
 
   const fetchPreview = async (albumTitle, artistName) => {
     setIsFetchingPreview(true);
@@ -94,10 +94,6 @@ useEffect(() => {
       <div className="md:col-span-3 bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">
         <h2 className="text-xl font-semibold mb-4">Reviews</h2>
         <Review />
-
-        <button className="mt-4 bg-green-500 text-white p-2 rounded-lg shadow-md hover:bg-green-600 transition duration-300">
-          Leave a Review
-        </button>
       </div>
     </div>
   );
