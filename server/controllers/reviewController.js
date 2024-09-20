@@ -47,9 +47,9 @@ const getReviewsByUser = async (req, res) => {
 
 // Add a new review
 const addReview = async (req, res) => {
-    const { rating, comment, albumId, userId } = req.body;  // Use albumId and userId
+    const { rating, comment, albumId, userId } = req.body;
     try {
-        const review = await Review.create({ rating, comment, albumId, userId });  // Match column names
+        const review = await Review.create({ rating, comment, albumId, userId });
         res.status(201).json(review);
     } catch (error) {
         res.status(500).json({ error: error.message });

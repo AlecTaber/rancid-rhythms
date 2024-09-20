@@ -18,17 +18,19 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Users', // Foreign key referencing the User model
+        model: 'Users',  // Reference the Users table
         key: 'id',
       },
+      onDelete: 'CASCADE',
     },
     albumId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'Albums', // Foreign key referencing the Album model
+        model: 'Albums',  // Reference the Albums table
         key: 'id',
       },
+      onDelete: 'CASCADE',
     },
   });
 
@@ -39,5 +41,6 @@ export default (sequelize, DataTypes) => {
 
   return Review;
 };
+
 
   
