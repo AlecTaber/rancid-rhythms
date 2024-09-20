@@ -89,12 +89,7 @@ useEffect(() => {
           <p className="text-gray-500">{isFetchingPreview ? 'Fetching preview...' : 'No preview available'}</p>
         )}
 
-        <button
-          onClick={() => fetchPreview(album.title, album["artist-credit"]?.[0]?.name)}
-          className="w-full bg-blue-500 text-white p-2 rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
-        >
-          Fetch Preview Again
-        </button>
+        
       </div>
 
       <div className="md:col-span-3 bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">
