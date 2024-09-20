@@ -1,6 +1,5 @@
-import Review from '../models/review';
-import Album from '../models/album';
-import User from '../models/user';
+import db from '../models/index.js';  // Correctly import the models
+const { Review, Album, User } = db;
 
 const getReviewsByAlbum = async (req, res) => {
     const reviews = await Review.findAll({

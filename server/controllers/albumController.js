@@ -1,4 +1,5 @@
-import Album from '../models/album';
+import db from '../models/index.js';
+const { Album } = db;
 
 const getAlbums = async (req, res) => {
     const albums = await Album.findAll();
