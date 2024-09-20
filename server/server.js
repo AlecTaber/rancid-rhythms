@@ -4,6 +4,8 @@ import albumRoutes from './routes/albumRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import reviewRoutes from './routes/reviewRoutes.js';
 import dotenv from 'dotenv';
+import sequelize from './config/connection.js';
+import db from './models/index.js';
 
 import authRoutes from './routes/authRoutes.js'; 
 import reviewRoutes from './routes/review.js';
