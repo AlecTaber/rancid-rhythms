@@ -9,20 +9,31 @@ const AlbumDetails = () => {
   const [isFetchingPreview, setIsFetchingPreview] = useState(false);
 
   useEffect(() => {
-    if (!album.id) {
-      // Fetch album details from MusicBrainz if not passed in state
-      fetch(`https://musicbrainz.org/ws/2/release/${id}?fmt=json`)
-        .then((response) => response.json())
-        .then((data) => {
-          setAlbum(data);
-          // Fetch preview from iTunes
-          fetchPreview(data.title, data["artist-credit"]?.[0]?.name);
-        });
-    } else {
-      // Fetch preview from iTunes using passed album data
-      fetchPreview(album.title, album["artist-credit"]?.[0]?.name);
-    }
-  }, [id, album]);
+  if (!album.id) {
+    // Fetch album details from MusicBrainz if not passed in state
+    fetch(`https://musicbrainz.org/ws/2/release/${id}?fmt=json`)
+      .then((response) => response.json())
+      .then((data) => {
+        setAlbum(data);
+        // Only fetch preview after setting the album
+        fetchPreview(data.title, data["artist-credit"]?.[0]?.name);
+      });
+  }
+}, [id]);
+
+useEffect(() => {
+  if (album.id) {
+    // Fetch preview from iTunes using passed album data
+    fetchPreview(album.title, album["artist-credit"]?.[0]?.name);
+  }
+}, [album]);
+
+useEffect(() => {
+  if (location.state?.album) {
+    setAlbum(location.state.album);
+    fetchPreview(location.state.album.title, location.state.album["artist-credit"]?.[0]?.name);
+  }
+}, [location.state]);
 
   const fetchPreview = async (albumTitle, artistName) => {
     setIsFetchingPreview(true);
@@ -99,4 +110,3 @@ const AlbumDetails = () => {
 };
 
 export default AlbumDetails;
-
