@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
+import Review from './Review';
 
 const AlbumDetails = () => {
   const { id } = useParams();
@@ -9,31 +10,31 @@ const AlbumDetails = () => {
   const [isFetchingPreview, setIsFetchingPreview] = useState(false);
 
   useEffect(() => {
-  if (!album.id) {
-    // Fetch album details from MusicBrainz if not passed in state
-    fetch(`https://musicbrainz.org/ws/2/release/${id}?fmt=json`)
-      .then((response) => response.json())
-      .then((data) => {
-        setAlbum(data);
-        // Only fetch preview after setting the album
-        fetchPreview(data.title, data["artist-credit"]?.[0]?.name);
-      });
-  }
-}, [id]);
+    if (!album.id) {
+      // Fetch album details from MusicBrainz if not passed in state
+      fetch(`https://musicbrainz.org/ws/2/release/${id}?fmt=json`)
+        .then((response) => response.json())
+        .then((data) => {
+          setAlbum(data);
+          // Only fetch preview after setting the album
+          fetchPreview(data.title, data["artist-credit"]?.[0]?.name);
+        });
+    }
+  }, [id]);
 
-useEffect(() => {
-  if (album.id) {
-    // Fetch preview from iTunes using passed album data
-    fetchPreview(album.title, album["artist-credit"]?.[0]?.name);
-  }
-}, [album]);
+  useEffect(() => {
+    if (album.id) {
+      // Fetch preview from iTunes using passed album data
+      fetchPreview(album.title, album["artist-credit"]?.[0]?.name);
+    }
+  }, [album]);
 
-useEffect(() => {
-  if (location.state?.album) {
-    setAlbum(location.state.album);
-    fetchPreview(location.state.album.title, location.state.album["artist-credit"]?.[0]?.name);
-  }
-}, [location.state]);
+  useEffect(() => {
+    if (location.state?.album) {
+      setAlbum(location.state.album);
+      fetchPreview(location.state.album.title, location.state.album["artist-credit"]?.[0]?.name);
+    }
+  }, [location.state]);
 
   const fetchPreview = async (albumTitle, artistName) => {
     setIsFetchingPreview(true);
@@ -88,22 +89,11 @@ useEffect(() => {
         ) : (
           <p className="text-gray-500">{isFetchingPreview ? 'Fetching preview...' : 'No preview available'}</p>
         )}
-
-        <button
-          onClick={() => fetchPreview(album.title, album["artist-credit"]?.[0]?.name)}
-          className="w-full bg-blue-500 text-white p-2 rounded-lg shadow-md hover:bg-blue-600 transition duration-300"
-        >
-          Fetch Preview Again
-        </button>
       </div>
 
       <div className="md:col-span-3 bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">
         <h2 className="text-xl font-semibold mb-4">Reviews</h2>
-        <p>No reviews yet. Be the first to leave a review!</p>
-
-        <button className="mt-4 bg-green-500 text-white p-2 rounded-lg shadow-md hover:bg-green-600 transition duration-300">
-          Leave a Review
-        </button>
+        <Review />
       </div>
     </div>
   );
