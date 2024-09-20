@@ -7,3 +7,4 @@ router.get('/:id', getUserById);
 router.post('/register', registerUser);
 
 export default router;
+

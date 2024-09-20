@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 
+
 // Dummy function to simulate fetching data from an API
 const fetchAlbums = async (type) => {
   // Replace this with actual API call logic
