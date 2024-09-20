@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
+import Review from './Review';
 
 const AlbumDetails = () => {
   const { id } = useParams();
@@ -88,8 +89,6 @@ useEffect(() => {
         ) : (
           <p className="text-gray-500">{isFetchingPreview ? 'Fetching preview...' : 'No preview available'}</p>
         )}
-
-        
       </div>
 
       <div className="md:col-span-3 bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">

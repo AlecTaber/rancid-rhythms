@@ -1,49 +1,59 @@
-import Review from '../models/review';
-import Album from '../models/album';
-import User from '../models/user';
+import db from '../models/index.js';  // Correctly import the models
+const { Review, Album, User } = db;
 
+// Get reviews by album
 const getReviewsByAlbum = async (req, res) => {
-    const reviews = await Review.findAll({
-        where: {
-            albumId: req.params.id,
-        },
-        include: [
-            {
-                model: User,
-                attributes: ['username'],
-            },
-            {
-                model: Album,
-                attributes: ['title'],
-            },
-        ],
-    });
-    res.json(reviews);
+    try {
+        const reviews = await Review.findAll({
+            where: { albumId: req.params.id },
+            include: [
+                {
+                    model: User,
+                    attributes: ['username'],
+                },
+                {
+                    model: Album,
+                    attributes: ['title'],
+                },
+            ],
+        });
+        res.json(reviews);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 }
 
+// Get reviews by user
 const getReviewsByUser = async (req, res) => {
-    const reviews = await Review.findAll({
-        where: {
-            userId: req.params.id,
-        },
-        include: [
-            {
-                model: User,
-                attributes: ['username'],
-            },
-            {
-                model: Album,
-                attributes: ['title'],
-            },
-        ],
-    });
-    res.json(reviews);
+    try {
+        const reviews = await Review.findAll({
+            where: { userId: req.params.id },
+            include: [
+                {
+                    model: User,
+                    attributes: ['username'],
+                },
+                {
+                    model: Album,
+                    attributes: ['title'],
+                },
+            ],
+        });
+        res.json(reviews);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 }
 
+// Add a new review
 const addReview = async (req, res) => {
-    const { rating, comment, AlbumId, UserId } = req.body; 
-    const review = await Review.create({ rating, comment, AlbumId, UserId }); 
-    res.json(review);
+    const { rating, comment, albumId, userId } = req.body;
+    try {
+        const review = await Review.create({ rating, comment, albumId, userId });
+        res.status(201).json(review);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 };
 
 export { addReview, getReviewsByAlbum, getReviewsByUser };
