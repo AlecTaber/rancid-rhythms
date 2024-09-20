@@ -1,27 +1,35 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/connection';
-
-const Album = sequelize.define('album', {
+export default (sequelize, DataTypes) => {
+  const Album = sequelize.define('Album', {
     id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true,
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
     },
     title: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     artist: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     year: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
+      type: DataTypes.INTEGER,
+      allowNull: true,
     },
     coverUrl: {
-        type: DataTypes.STRING,
-        allowNull: true,
+      type: DataTypes.STRING,
+      allowNull: true,
     },
-});
+  });
+
+  Album.associate = (models) => {
+    Album.hasMany(models.Review, { foreignKey: 'albumId', onDelete: 'CASCADE' });
+  };
+
+  return Album;
+};
+
+  
+  

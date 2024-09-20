@@ -1,32 +1,33 @@
 import bcrypt from 'bcrypt';
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/connection.js';
 
-const User = (sequelize) => {
-  const UserModel = sequelize.define('User', {
+export default (sequelize, DataTypes) => {
+  const User = sequelize.define('User', {
     id: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        primaryKey: true,
-        autoIncrement: true,
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
     },
     username: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   });
 
   // Hash password before saving user
-  UserModel.beforeCreate(async (user) => {
+  User.beforeCreate(async (user) => {
     user.password = await bcrypt.hash(user.password, 10);
   });
 
-  return UserModel;
+  User.associate = (models) => {
+    User.hasMany(models.Review, { foreignKey: 'userId', onDelete: 'CASCADE' });
+  };
+
+  return User;
 };
 
-export default User;
