@@ -1,27 +1,30 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/connection';
-
-const Album = sequelize.define('album', {
-    id: {
+export default (sequelize, DataTypes) => {
+    const Album = sequelize.define('Album', {
+      id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
-    },
-    title: {
+      },
+      title: {
         type: DataTypes.STRING,
         allowNull: false,
-    },
-    artist: {
+      },
+      artist: {
         type: DataTypes.STRING,
         allowNull: false,
-    },
-    year: {
+      },
+      year: {
         type: DataTypes.INTEGER,
         allowNull: true,
-    },
-    coverUrl: {
+      },
+      coverUrl: {
         type: DataTypes.STRING,
         allowNull: true,
-    },
-});
+      },
+    });
+  
+    return Album;
+  };
+  
+  

@@ -1,21 +1,19 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config/connection';
-
-const Review = sequelize.define('review', {
-    id: {
+export default (sequelize, DataTypes) => {
+    return sequelize.define('Review', {
+      id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
         autoIncrement: true,
-    },
-    review: {
+      },
+      review: {
         type: DataTypes.TEXT,
         allowNull: false,
-    },
-    rating: {
+      },
+      rating: {
         type: DataTypes.INTEGER,
         allowNull: false,
-    },
-});
-
-export default Review;
+      },
+    });
+  };
+  

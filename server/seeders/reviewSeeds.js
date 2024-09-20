@@ -1,8 +1,8 @@
-// seeders/[timestamp]-demo-reviews.js
-import { Review } from '../models/review.js';
+import db from '../models/index.js'; // Import the default export from models
+const { Review } = db; // Extract Review from the db object
 
-export const up = async (queryInterface, Sequelize) => {
-  await queryInterface.bulkInsert('reviews', [
+export const up = async () => {
+  await Review.bulkCreate([
     {
       review: 'An incredible album that defined a generation.',
       rating: 5,
@@ -18,6 +18,3 @@ export const up = async (queryInterface, Sequelize) => {
   ]);
 };
 
-export const down = async (queryInterface, Sequelize) => {
-  await queryInterface.bulkDelete('reviews', null, {});
-};
