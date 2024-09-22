@@ -16,6 +16,8 @@ const SignIn = () => {
         if (response.ok) {
             const { token } = await response.json();
             localStorage.setItem('token', token); // Store the token
+            const loginEvent = new Event('authChange');
+            window.dispatchEvent(loginEvent);
             navigate('/profile'); // Redirect to Profile
         } else {
             alert('Sign in failed!');
