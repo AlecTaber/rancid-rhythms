@@ -5,14 +5,14 @@
  const { User } = db;
 
  const registerUser = async (req, res) => {
-    const {userName, password} = req.body;
-     const user = await User.create({userName, password});
+    const {username, password} = req.body;
+     const user = await User.create({username, password});
      res.json(user);
  }
 
  const loginUser = async (req, res) => {
-     const {userName, password} = req.body;
-     const user = await User.findOne({where: {userName}});
+     const {username, password} = req.body;
+     const user = await User.findOne({where: {username}});
      if (!user || !(await bcrypt.compare(password, user.password))) {
          return res.status(401).json({message: 'Invalid username or password'});
      }
