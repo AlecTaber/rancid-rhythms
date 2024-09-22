@@ -16,12 +16,6 @@ const Nav = () => {
           <li>
             <NavLink to="/profile" className="text-3xl hover:text-green-200">Profile</NavLink>
           </li>
-          <li>
-            <NavLink to="/signup" className="text-2xl hover:text-green-200">Sign Up</NavLink>
-          </li>
-          <li>
-            <NavLink to="/signin" className="text-2xl hover:text-green-200">Sign In</NavLink>
-          </li>
         </ul>
       </div>
     </nav>
