@@ -8,7 +8,7 @@ const SignIn = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch('http://localhost:5173/server/routes/authRoutes.js', {
+        const response = await fetch('http://localhost:5001/users/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
@@ -24,8 +24,18 @@ const SignIn = () => {
 
     return (
         <form onSubmit={handleSubmit}>
-            <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="Username" required />
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Password" required />
+            <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter your username"
+            />
+            <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter your password"
+            />
             <button type="submit">Sign In</button>
         </form>
     );
