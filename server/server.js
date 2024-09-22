@@ -8,7 +8,7 @@ import sequelize from './config/connection.js';
 import db from './models/index.js';
 
 import authRoutes from './routes/authRoutes.js'; 
-import reviewRoutes from './routes/review.js';
+
 
 dotenv.config();
 const app = express();
@@ -20,6 +20,7 @@ app.use('/users', userRoutes);
 app.use('/reviews', reviewRoutes);
 app.use('/api/auth', authRoutes); 
 app.use('/api/review', reviewRoutes);
+app.use(cors());
 
 
 // Sync the database and start the server

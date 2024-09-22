@@ -1,5 +1,5 @@
 import express from 'express';
-import { User } from '../models/user.js'; // Adjust the import according to your structure
+import  User  from '../models/user.js'; // Adjust the import according to your structure
 import jwt from 'jsonwebtoken';
 
 const router = express.Router();
@@ -9,9 +9,9 @@ router.post('/signup', async (req, res) => {
     const { username, password } = req.body;
     try {
         const newUser = await User.create({ username, password });
-        res.status(201).json({ id: newUser.id, username: newUser.username });
+        res.status(201).json({ id: newUser.id, username: newUser.username }); // Respond with JSON
     } catch (error) {
-        res.status(400).json({ message: 'User creation failed', error: error.message });
+        res.status(400).json({ message: 'User creation failed', error: error.message }); // Respond with JSON
     }
 });
 

@@ -1,5 +1,2 @@
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    username VARCHAR(255) UNIQUE NOT NULL,
-    password_hash VARCHAR(255) NOT NULL
-);
+DROP DATABASE IF EXISTS rancid_db; 
+CREATE DATABASE rancid_db;
