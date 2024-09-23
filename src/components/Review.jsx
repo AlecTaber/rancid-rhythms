@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
 const Review = ({ albumTitle, albumMbid }) => {
     const [review, setReview] = useState('');
@@ -8,16 +9,37 @@ const Review = ({ albumTitle, albumMbid }) => {
     const [reviewsList, setReviewsList] = useState([]);
     const navigate = useNavigate();
 
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            fetch('http://localhost:5001/reviews/user', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                },
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                    setReviewsList(data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        } else {
+            navigate('/signin');
+        }
+    }, [navigate]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
-    
+
         const token = localStorage.getItem('token');
         if (!token) {
             alert('You need to be logged in to leave a review.');
             navigate('/signin');
             return;
         }
-    
+
         // Use the dynamic albumTitle and albumMbid from the MusicBrainz API search result
         if (review && rating > 0) {
             fetch('http://localhost:5001/reviews', {
@@ -29,19 +51,22 @@ const Review = ({ albumTitle, albumMbid }) => {
                 body: JSON.stringify({
                     rating,
                     review,
-                    albumTitle,  // Dynamic album title from MusicBrainz API
-                    albumMbid,   // Dynamic MBID from MusicBrainz API
                 }),
             })
-            .then((response) => response.json())
-            .then((data) => {
-                setReviewsList([{ rating, review }, ...reviewsList]);
-                setReview('');
-                setRating(0);
+                .then((response) => response.json())
+                .then((data) => {
+                    if (data.User && data.User.username) {
+                    setReviewsList([{ rating, review, User: { username: data.User.username } }, ...reviewsList]);
+                } else {
+                    console.error("User or username not found in response data");
+                }
+                    setReview('');
+                    setRating(0);
             })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
         }
     };
 
@@ -51,6 +76,21 @@ const Review = ({ albumTitle, albumMbid }) => {
                 <p>No reviews yet. Be the first to leave a review!</p>
             ) : (
                 <p>Leave a review!</p>
+            )}
+            {reviewsList.length > 0 && (
+                <div className="reviews-list mt-4">
+                    {reviewsList.map((r, index) => (
+                        <div key={index} className="review border p-4 rounded-lg shadow-sm mb-4">
+                            <h3 className="font-bold">{r.User.username}</h3>
+                            <div className="stars">
+                                {Array(r.rating).fill().map((_, i) => (
+                                    <span key={i} className="text-yellow-500">★</span>
+                                ))}
+                            </div>
+                            <p>{r.review}</p>
+                        </div>
+                    ))}
+                </div>
             )}
             <div className="mt-2">
                 {[...Array(5)].map((_, index) => (
@@ -80,22 +120,6 @@ const Review = ({ albumTitle, albumMbid }) => {
                     Submit Review
                 </button>
             </form>
-
-            {reviewsList.length > 0 && (
-                <div className="reviews-list mt-4">
-                    {reviewsList.map((r, index) => (
-                        <div key={index} className="review border p-4 rounded-lg shadow-sm mb-4">
-                            <h3 className="font-bold">Username</h3> {/* Placeholder for username */}
-                            <div className="stars">
-                                {Array(r.rating).fill().map((_, i) => (
-                                    <span key={i} className="text-yellow-500">★</span>
-                                ))}
-                            </div>
-                            <p>{r.review}</p>
-                        </div>
-                    ))}
-                </div>
-            )}
         </div>
     );
 };

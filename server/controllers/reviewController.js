@@ -27,7 +27,7 @@ const getReviewsByAlbum = async (req, res) => {
 const getReviewsByUser = async (req, res) => {
     try {
         const reviews = await Review.findAll({
-            where: { userId: req.params.id },
+            where: { userId: req.user.id },
             include: [
                 {
                     model: User,
@@ -47,31 +47,29 @@ const getReviewsByUser = async (req, res) => {
 
 // Add a new review
 const addReview = async (req, res) => {
-    const { rating, review, albumTitle, albumMbid } = req.body;
+    const { rating, review, albumId = null } = req.body;
     const userId = req.user.id; // The authenticated user's ID
 
     try {
-        // Check if the album exists in the database by MBID
-        let album = await Album.findOne({ where: { mbid: albumMbid } });
-
-        // If the album doesn't exist, create it
-        if (!album) {
-            album = await Album.create({
-                title: albumTitle,
-                mbid: albumMbid
-            });
-        }
-
-        // Now create the review, associated with the album
         const newReview = await Review.create({
             rating,
             review,
-            albumId: album.id,
-            userId
+            userId,
+            albumId, // Can be null for now, testing purposes
         });
 
-        res.status(201).json({ message: 'Review added successfully', newReview });
+        const user = await User.findByPk(userId,
+            { attributes: ['username']               
+        });
+        res.status(201).json({
+            id: newReview.id,
+            rating: newReview.rating,
+            review: newReview.review,
+            User: user
+        });
+
     } catch (error) {
+        console.error("Error while adding review:", error);
         res.status(500).json({ error: error.message });
     }
 };

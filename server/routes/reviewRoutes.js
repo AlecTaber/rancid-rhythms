@@ -7,6 +7,7 @@ const router = express.Router();
 router.post('/',protect, addReview);
 router.get('/album/:id', getReviewsByAlbum);
 router.get('/user/:id', getReviewsByUser);
+router.get('/user',protect, getReviewsByUser);
 
 router.get('/reviews', protect, async (req, res) => {
     // Fetch reviews for the authenticated user

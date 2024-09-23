@@ -25,7 +25,7 @@ export default (sequelize, DataTypes) => {
     },
     albumId: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true, // Allow null for now, testing purposes
       references: {
         model: 'Albums',  // Reference the Albums table
         key: 'id',
