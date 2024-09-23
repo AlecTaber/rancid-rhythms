@@ -138,7 +138,7 @@ const Body = ({ section }) => {
         <section className="p-8 bg-gradient-to-br from-green-600 to-green-200 min-h-screen">
           <h2 className="text-4xl font-bold text-black mb-6">Your Profile</h2>
           <p className="text-lg text-black mb-8">Here's where you can see your reviews.</p>
-    
+
           {/* Reviews section */}
           <h3 className="text-3xl font-semibold text-black mb-4">Your Reviews</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -174,15 +174,25 @@ const Body = ({ section }) => {
                       </h4>
                     </>
                   )}
-                  <p className="text-yellow-500 font-bold mb-2">Rating: {review.rating} / 5</p>
-                  <p className="text-gray-700">{review.review}</p>
+                  <div className="stars">
+                    {[...Array(5)].map((_, index) => (
+                      <span
+                        key={index}
+                        className={`text-2xl mx-1 ${review.rating > index ? 'text-yellow-500' : 'text-gray-300'}`}
+                      >
+                        ★
+                      </span>
+                    ))}
+                  </div>
+
+                  <p className="text-gray-700 mt-2">{review.review}</p>
                 </div>
               ))
             )}
           </div>
         </section>
       );
-    
+
 
     default:
       return (
