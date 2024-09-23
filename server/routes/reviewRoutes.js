@@ -4,7 +4,7 @@ import protect from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/', addReview);
+router.post('/',protect, addReview);
 router.get('/album/:id', getReviewsByAlbum);
 router.get('/user/:id', getReviewsByUser);
 

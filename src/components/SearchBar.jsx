@@ -33,7 +33,12 @@ const SearchBar = () => {
   };
 
   const handleAlbumClick = (album) => {
-    navigate(`/album/${album.id}`, { state: { album } });
+    navigate(`/album/${album.id}`, { state: { 
+      albumTitle: album.title, 
+      albumMbid: album.id, 
+      albumArtist: album["artist-credit"]?.[0]?.name, 
+      albumDate: album.date 
+    } });
     setIsDropdownOpen(false);
   };
 

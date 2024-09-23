@@ -19,8 +19,6 @@ app.use('/albums', albumRoutes);
 app.use('/users', userRoutes);
 app.use('/reviews', reviewRoutes);
 app.use('/api/auth', authRoutes); 
-app.use('/api/review', reviewRoutes);
-app.use(cors());
 
 
 // Sync the database and start the server

@@ -1,18 +1,47 @@
 import React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const Review = () => {
+const Review = ({ albumTitle, albumMbid }) => {
     const [review, setReview] = useState('');
     const [rating, setRating] = useState(0);
     const [reviewsList, setReviewsList] = useState([]);
+    const navigate = useNavigate();
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (review) {
-            // Add the new review at the beginning of the list
-            setReviewsList([{ review, rating }, ...reviewsList]);
-            setReview('');
-            setRating(0);
+    
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('You need to be logged in to leave a review.');
+            navigate('/signin');
+            return;
+        }
+    
+        // Use the dynamic albumTitle and albumMbid from the MusicBrainz API search result
+        if (review && rating > 0) {
+            fetch('http://localhost:5001/reviews', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    rating,
+                    review,
+                    albumTitle,  // Dynamic album title from MusicBrainz API
+                    albumMbid,   // Dynamic MBID from MusicBrainz API
+                }),
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                setReviewsList([{ rating, review }, ...reviewsList]);
+                setReview('');
+                setRating(0);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
         }
     };
 
