@@ -22,6 +22,11 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
+    mbid: {
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: true,
+    },
   });
 
   Album.associate = (models) => {
