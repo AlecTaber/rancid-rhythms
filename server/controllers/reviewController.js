@@ -33,10 +33,11 @@ const getReviewsByUser = async (req, res) => {
                     model: User,
                     attributes: ['username'],
                 },
-                {
-                    model: Album,
-                    attributes: ['title'],
-                },
+                //Temporary removal of Album model to test reviews
+                //{
+                    //model: Album,
+                    //attributes: ['title'],
+                //},
             ],
         });
         res.json(reviews);
