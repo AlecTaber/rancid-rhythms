@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 // Dummy function to simulate fetching data from an API
@@ -20,32 +21,21 @@ const fetchAlbums = async (type) => {
   return [];
 };
 
-// Dummy function to simulate fetching user reviews (replace with actual API logic)
-const fetchUserReviews = async () => {
-  return [
-    {
-      id: 1,
-      albumCover: "link_to_album_cover_1",
-      albumTitle: "Album Title 1",
-      rating: 4.5,
-      reviewText: "This album was amazing! The production is top-notch.",
+const fetchUserReviews = async (token) => {
+  const response = await fetch("http://localhost:5001/reviews/user", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
-    {
-      id: 2,
-      albumCover: "link_to_album_cover_2",
-      albumTitle: "Album Title 2",
-      rating: 3.0,
-      reviewText: "Decent, but not their best work.",
-    },
-    {
-      id: 3,
-      albumCover: "link_to_album_cover_3",
-      albumTitle: "Album Title 3",
-      rating: 5.0,
-      reviewText: "A masterpiece. Every track is a banger!",
-    },
-  ];
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch user reviews");
+  }
+  return response.json();
 };
+
+
 
 const Body = ({ section }) => {
   const [trendingAlbums, setTrendingAlbums] = useState([]);
@@ -64,8 +54,17 @@ const Body = ({ section }) => {
     };
 
     const getUserReviews = async () => {
-      const reviews = await fetchUserReviews();
-      setUserReviews(reviews);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        navigate("/signin"); // Redirect to signin if no token found
+        return;
+      }
+      try {
+        const reviews = await fetchUserReviews(token);
+        setUserReviews(reviews);
+      } catch (error) {
+        console.error("Error fetching reviews:", error);
+      }
     };
 
     if (section === "home") {
@@ -138,33 +137,62 @@ const Body = ({ section }) => {
       return (
         <section className="p-8 bg-gradient-to-br from-green-600 to-green-200 min-h-screen">
           <h2 className="text-4xl font-bold text-black mb-6">Your Profile</h2>
-          <p className="text-lg text-black mb-8">
-            Here's where you can see your reviews.
-          </p>
+          <p className="text-lg text-black mb-8">Here's where you can see your reviews.</p>
 
           {/* Reviews section */}
           <h3 className="text-3xl font-semibold text-black mb-4">Your Reviews</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {userReviews.map((review) => (
-              <div
-                key={review.id}
-                className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300"
-              >
-                <img
-                  src={review.albumCover}
-                  alt={review.albumTitle}
-                  className="w-full h-64 object-cover rounded-t-lg mb-4"
-                />
-                <h4 className="text-xl font-semibold mb-2 text-black">
-                  {review.albumTitle}
-                </h4>
-                <p className="text-yellow-500 font-bold mb-2">Rating: {review.rating} / 5</p>
-                <p className="text-gray-700">{review.reviewText}</p>
-              </div>
-            ))}
+            {userReviews.length === 0 ? (
+              <p className="text-lg text-black">You haven't left any reviews yet.</p>
+            ) : (
+              userReviews.map((review) => (
+                <div
+                  key={review.id}
+                  className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300"
+                >
+                  {/* Conditionally render Album info if it's available */}
+                  {review.Album ? (
+                    <>
+                      <img
+                        src={review.Album.coverUrl || 'default-cover-url.jpg'}  // Use album cover or a default image
+                        alt={review.Album.title}
+                        className="w-full h-64 object-cover rounded-t-lg mb-4"
+                      />
+                      <h4 className="text-xl font-semibold mb-2 text-black">
+                        {review.Album.title}
+                      </h4>
+                    </>
+                  ) : (
+                    <>
+                      <img
+                        src="default-cover-url.jpg"  // Default image if album data is missing
+                        alt="Unknown Album"
+                        className="w-full h-64 object-cover rounded-t-lg mb-4"
+                      />
+                      <h4 className="text-xl font-semibold mb-2 text-black">
+                        Unknown Album
+                      </h4>
+                    </>
+                  )}
+                  <div className="stars">
+                    {[...Array(5)].map((_, index) => (
+                      <span
+                        key={index}
+                        className={`text-2xl mx-1 ${review.rating > index ? 'text-yellow-500' : 'text-gray-300'}`}
+                      >
+                        ★
+                      </span>
+                    ))}
+                  </div>
+
+                  <p className="text-gray-700 mt-2">{review.review}</p>
+                </div>
+              ))
+            )}
           </div>
         </section>
       );
+
 
     default:
       return (
