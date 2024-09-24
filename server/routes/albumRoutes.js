@@ -1,9 +1,9 @@
 import express from 'express';
-import { getAlbums, getAlbumById, addAlbum } from '../controllers/albumController.js';
+import { getAlbums, getAlbumById } from '../controllers/albumController.js';
 const router = express.Router();
 
 router.get('/', getAlbums);
 router.get('/:id', getAlbumById);
-router.post('/', addAlbum);
+//router.post('/', addAlbum);
 
 export default router;
