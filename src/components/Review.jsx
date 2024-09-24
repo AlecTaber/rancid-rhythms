@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
-const Review = ({ albumTitle, albumMbid }) => {
+const Review = ({ albumTitle, albumArtist, albumId }) => {
     const [review, setReview] = useState('');
     const [rating, setRating] = useState(0);
     const [reviewsList, setReviewsList] = useState([]);
@@ -41,7 +41,7 @@ const Review = ({ albumTitle, albumMbid }) => {
         }
 
         // Use the dynamic albumTitle and albumMbid from the MusicBrainz API search result
-        if (review && rating > 0) {
+        if (review && rating > 0 && albumTitle && albumId && albumArtist) {
             fetch('http://localhost:5001/reviews', {
                 method: 'POST',
                 headers: {
@@ -51,6 +51,9 @@ const Review = ({ albumTitle, albumMbid }) => {
                 body: JSON.stringify({
                     rating,
                     review,
+                    title: albumTitle,
+                    artist: albumArtist,
+                    albumId,
                 }),
             })
                 .then((response) => response.json())
