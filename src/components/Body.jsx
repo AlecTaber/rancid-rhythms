@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-
-// Dummy function to simulate fetching data from an API
-const fetchAlbums = async (type) => {
-  // Replace this with actual API call logic
-  if (type === "trending") {
-    return [
-      { id: 1, name: "Hot Album 1", cover: "link_to_album_cover_1" },
-      { id: 2, name: "Hot Album 2", cover: "link_to_album_cover_2" },
-      { id: 3, name: "Hot Album 3", cover: "link_to_album_cover_3" },
-    ];
-  } else if (type === "bad") {
-    return [
-      { id: 1, name: "Bad Album 1", cover: "link_to_album_cover_3" },
-      { id: 2, name: "Bad Album 2", cover: "link_to_album_cover_4" },
-      { id: 3, name: "Bad Album 3", cover: "link_to_album_cover_5" },
-    ];
+const fetchHighestRatedAlbums = async (setHighestRatedAlbums) => {
+  try {
+    const response = await fetch("http://localhost:5001/reviews/highest-rated");
+    const data = await response.json();
+    setHighestRatedAlbums(data);
+  } catch (error) {
+    console.error("Error fetching highest-rated albums:", error);
+    setHighestRatedAlbums([]);  // Set an empty array in case of an error
   }
-  return [];
+};
+
+const fetchLowestRatedAlbums = async (setLowestRatedAlbums) => {
+  try {
+    const response = await fetch("http://localhost:5001/reviews/lowest-rated");
+    const data = await response.json();
+    setLowestRatedAlbums(data);
+  } catch (error) {
+    console.error("Error fetching lowest-rated albums:", error);
+    setLowestRatedAlbums([]);  // Set an empty array in case of an error
+  }
 };
 
 const fetchUserReviews = async (setUserReviews) => {
@@ -45,41 +47,27 @@ const fetchUserReviews = async (setUserReviews) => {
 
 
 const Body = ({ section }) => {
-  const [trendingAlbums, setTrendingAlbums] = useState([]);
-  const [badAlbums, setBadAlbums] = useState([]);
   const [userReviews, setUserReviews] = useState([]);
+  const [highestRatedAlbums, setHighestRatedAlbums] = useState([]);
+  const [lowestRatedAlbums, setLowestRatedAlbums] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const getTrendingAlbums = async () => {
-      const albums = await fetchAlbums("trending");
-      setTrendingAlbums(albums);
-    };
-
-    const getBadAlbums = async () => {
-      const albums = await fetchAlbums("bad");
-      setBadAlbums(albums);
-    };
-
-    const getUserReviews = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        navigate("/signin");
-        return;
-      }
-      try {
-        await fetchUserReviews(setUserReviews);  // Pass setUserReviews as an argument here
-      } catch (error) {
-        console.error("Error fetching reviews:", error);
-      }
-    };
-
     if (section === "home") {
-      getTrendingAlbums();
-      getBadAlbums();
-    } else if (section === "profile") {
-      getUserReviews();
+      fetchHighestRatedAlbums(setHighestRatedAlbums);
+      fetchLowestRatedAlbums(setLowestRatedAlbums);
     }
+  }, [section]);
 
+  const handleAlbumClick = (albumId) => {
+    navigate(`/AlbumDetails${albumId}`);
+  };
+
+  // Fetch user reviews for the profile page
+  useEffect(() => {
+    if (section === "profile") {
+      fetchUserReviews(setUserReviews, navigate);
+    }
   }, [section]);
 
   switch (section) {
@@ -93,48 +81,64 @@ const Body = ({ section }) => {
             Read and Write reviews for your favorite albums!
           </p>
 
-          {/* Hot and Trending Albums */}
+          {/* Highest Rated Albums */}
           <h3 className="text-2xl font-semibold text-black mb-4">
-            Hot and Trending Albums
+            Highest Rated Albums
           </h3>
           <div className="album-section grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
-            {trendingAlbums.map((album) => (
-              <div
-                key={album.id}
-                className="album bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition duration-300"
-              >
-                <img
-                  src={album.cover}
-                  alt={album.name}
-                  className="w-full h-64 object-cover rounded-t-lg"
-                />
-                <p className="mt-4 text-center font-semibold text-black">
-                  {album.name}
-                </p>
-              </div>
-            ))}
+            {Array.isArray(highestRatedAlbums) && highestRatedAlbums.length > 0 ? (
+              highestRatedAlbums.map((album) => (
+                <div
+                  key={album.musicBrainzId}  // Use album.musicBrainzId as the key
+                  className="album bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition duration-300"
+                  onClick={() => handleAlbumClick(album.musicBrainzId)}
+                >
+                  <img
+                    src={album.coverUrl || 'default-cover-url.jpg'}
+                    alt={album.title}
+                    className="w-full h-64 object-cover rounded-t-lg"
+                  />
+                  <p className="mt-4 text-center font-semibold text-black">
+                    {album.title}
+                  </p>
+                  <p className="text-center text-gray-500">
+                    Average Rating: {album.averageRating}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p>No highest-rated albums available.</p>
+            )}
           </div>
 
-          {/* Albums That Sound Good on Mute */}
+// Lowest Rated Albums Section
           <h3 className="text-2xl font-semibold text-black mb-4">
-            Albums That Sound Good on Mute
+            Lowest Rated Albums
           </h3>
           <div className="album-section grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {badAlbums.map((album) => (
-              <div
-                key={album.id}
-                className="album bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition duration-300"
-              >
-                <img
-                  src={album.cover}
-                  alt={album.name}
-                  className="w-full h-64 object-cover rounded-t-lg"
-                />
-                <p className="mt-4 text-center font-semibold text-black">
-                  {album.name}
-                </p>
-              </div>
-            ))}
+            {Array.isArray(lowestRatedAlbums) && lowestRatedAlbums.length > 0 ? (
+              lowestRatedAlbums.map((album) => (
+                <div
+                  key={album.musicBrainzId}  // Use album.musicBrainzId as the key
+                  className="album bg-white p-4 rounded-lg shadow-lg hover:shadow-xl transition duration-300"
+                  onClick={() => handleAlbumClick(album.musicBrainzId)}
+                >
+                  <img
+                    src={album.coverUrl || 'default-cover-url.jpg'}
+                    alt={album.title}
+                    className="w-full h-64 object-cover rounded-t-lg"
+                  />
+                  <p className="mt-4 text-center font-semibold text-black">
+                    {album.title}
+                  </p>
+                  <p className="text-center text-gray-500">
+                    Average Rating: {album.averageRating}
+                  </p>
+                </div>
+              ))
+            ) : (
+              <p>No lowest-rated albums available.</p>
+            )}
           </div>
         </section>
       );
