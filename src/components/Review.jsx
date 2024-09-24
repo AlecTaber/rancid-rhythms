@@ -40,8 +40,15 @@ const Review = ({ albumTitle, albumArtist, albumId }) => {
             return;
         }
 
+        console.log('Submitting review with:', {
+            rating,
+            review,
+            title: albumTitle,
+            artist: albumArtist,
+        });
+
         // Use the dynamic albumTitle and albumMbid from the MusicBrainz API search result
-        if (review && rating > 0 && albumTitle && albumId && albumArtist) {
+        if (review && rating > 0) {
             fetch('http://localhost:5001/reviews', {
                 method: 'POST',
                 headers: {
@@ -53,11 +60,16 @@ const Review = ({ albumTitle, albumArtist, albumId }) => {
                     review,
                     title: albumTitle,
                     artist: albumArtist,
-                    albumId,
                 }),
             })
-                .then((response) => response.json())
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
                 .then((data) => {
+                    console.log('Review response data:', data);
                     if (data.User && data.User.username) {
                     setReviewsList([{ rating, review, User: { username: data.User.username } }, ...reviewsList]);
                 } else {

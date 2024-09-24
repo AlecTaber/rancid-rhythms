@@ -62,13 +62,11 @@ const addReview = async (req, res) => {
         // Check if the album exists in the database based on title and artist
         let album = await Album.findOne({ where: { title, artist } });
 
-        // If the album doesn't exist, call addAlbum to create and save it
+        // If the album doesn't exist, create a new one
         if (!album) {
-            try {
-                album = await Album.create({ title, artist, year, coverUrl });
-            } catch (error) {
-                return res.status(500).json({ error: "Failed to create album." });
-            }
+            console.log(`Creating new album: ${title} by ${artist}`);
+            album = await Album.create({ title, artist, year, coverUrl });
+            console.log('Album created:', album);
         }
 
         const newReview = await Review.create({
@@ -94,7 +92,6 @@ const addReview = async (req, res) => {
             Album: { title: album.title, artist: album.artist },
         });
 
-        res.status(201).json({ message: "Review created and attached to an album successfully", newReview })
     } catch (error) {
         console.error("Error while adding review:", error);
         res.status(500).json({ error: error.message });
