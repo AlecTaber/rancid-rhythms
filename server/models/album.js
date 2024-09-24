@@ -22,15 +22,15 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: true,
     },
-    mbid: {
+    musicBrainzId: {
       type: DataTypes.STRING,
-      unique: true,
-      allowNull: true,
+      unique: true, // Make sure the MusicBrainz ID is unique
+      allowNull: false,
     },
   });
 
   Album.associate = (models) => {
-    Album.hasMany(models.Review, { foreignKey: 'albumId', onDelete: 'CASCADE' });
+    Album.hasMany(models.Review, { foreignKey: 'albumId', sourceKey: 'musicBrainzId', onDelete: 'CASCADE' });
   };
 
   return Album;

@@ -24,11 +24,11 @@ export default (sequelize, DataTypes) => {
       onDelete: 'CASCADE',
     },
     albumId: {
-      type: DataTypes.INTEGER,
-      allowNull: true, // Allow null for now, testing purposes
+      type: DataTypes.STRING,
+      allowNull: false,
       references: {
         model: 'Albums',  // Reference the Albums table
-        key: 'id',
+        key: 'musicBrainzId',
       },
       onDelete: 'CASCADE',
     },
@@ -36,7 +36,7 @@ export default (sequelize, DataTypes) => {
 
   Review.associate = (models) => {
     Review.belongsTo(models.User, { foreignKey: 'userId' });
-    Review.belongsTo(models.Album, { foreignKey: 'albumId' });
+    Review.belongsTo(models.Album, { foreignKey: 'albumId', targetKey: 'musicBrainzId' });
   };
 
   return Review;

@@ -5,23 +5,19 @@ const { Review, Album, User } = db;
 const getReviewsByAlbum = async (req, res) => {
     try {
         const reviews = await Review.findAll({
-            where: { albumId: req.params.id },
+            where: { albumId: req.params.musicBrainzId }, // Use the MusicBrainz ID
             include: [
                 {
                     model: User,
                     attributes: ['username'],
                 },
-                {
-                    model: Album,
-                    attributes: ['title'],
-                },
             ],
         });
-        res.json(reviews);
+        res.status(200).json(reviews);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-}
+};
 
 // Get reviews by user
 const getReviewsByUser = async (req, res) => {
@@ -50,22 +46,22 @@ const getReviewsByUser = async (req, res) => {
 const addReview = async (req, res) => {
     console.log("Request body:", req.body); // Log the incoming request body
 
-    const { rating, review, title, artist, year, coverUrl } = req.body;
+    const { rating, review, title, artist, year, coverUrl, musicBrainzId } = req.body;
     const userId = req.user.id; // The authenticated user's ID
 
     // Check if required fields are present
-    if (!title || !artist || !rating || !review) {
+    if (!title || !artist || !rating || !review || !musicBrainzId) {
         return res.status(400).json({ error: "All fields are required." });
     }
 
     try {
         // Check if the album exists in the database based on title and artist
-        let album = await Album.findOne({ where: { title, artist } });
+        let album = await Album.findOne({ where: { musicBrainzId } });
 
         // If the album doesn't exist, create a new one
         if (!album) {
             console.log(`Creating new album: ${title} by ${artist}`);
-            album = await Album.create({ title, artist, year, coverUrl });
+            album = await Album.create({ title, artist, year, coverUrl, musicBrainzId });
             console.log('Album created:', album);
         }
 
@@ -73,7 +69,7 @@ const addReview = async (req, res) => {
             rating,
             review,
             userId,
-            albumId: album.id,
+            albumId: album.musicBrainzId,
         });
 
         const user = await User.findByPk(userId,
@@ -89,7 +85,7 @@ const addReview = async (req, res) => {
             rating: newReview.rating,
             review: newReview.review,
             User: user,
-            Album: { title: album.title, artist: album.artist },
+            Album: { musicBrainzId: album.musicBrainzId, title: album.title, artist: album.artist },
         });
 
     } catch (error) {
