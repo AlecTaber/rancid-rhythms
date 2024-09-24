@@ -40,16 +40,28 @@ const Review = ({ albumTitle, albumArtist, albumId }) => {
 
     useEffect(() => {
         if (albumId) {
+            console.log("Fetching reviews for albumId:", albumId);
             fetch(`http://localhost:5001/reviews/album/${albumId}`, {
                 method: 'GET',
             })
-                .then((response) => response.json())
-                .then((data) => {
-                    setReviewsList(data);
-                })
-                .catch((error) => {
-                    console.error('Error fetching reviews:', error);
-                });
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Fetched reviews:", data); // Add this for debugging
+                if (Array.isArray(data)) {
+                    setReviewsList(data); // Set only if it's an array
+                } else {
+                    setReviewsList([]); // Default to an empty array
+                }
+            })
+            .catch((error) => {
+                console.error('Error fetching reviews:', error);
+                setReviewsList([]); // Default to an empty array in case of an error
+            });
         }
     }, [albumId]);
 
@@ -69,6 +81,7 @@ const Review = ({ albumTitle, albumArtist, albumId }) => {
             review,
             title: albumTitle,
             artist: albumArtist,
+            musicBrainzId: albumId,
         });
 
         // Use the dynamic albumTitle and albumMbid from the MusicBrainz API search result
@@ -84,7 +97,7 @@ const Review = ({ albumTitle, albumArtist, albumId }) => {
                     review,
                     title: albumTitle,
                     artist: albumArtist,
-                    albumId: albumId,
+                    musicBrainzId: albumId,
                 }),
             })
                 .then((response) => {
@@ -96,7 +109,11 @@ const Review = ({ albumTitle, albumArtist, albumId }) => {
                 .then((data) => {
                     console.log('Review response data:', data);
                     if (data.User && data.User.username) {
-                        setReviewsList([{ rating, review, User: { username: data.User.username } }, ...reviewsList]);
+                        if (Array.isArray(reviewsList)) {
+                            setReviewsList([{ rating, review, User: { username: data.User.username } }, ...reviewsList]);
+                        } else {
+                            setReviewsList([{ rating, review, User: { username: data.User.username } }]); // Start a new list
+                        }
                     } else {
                         console.error("User or username not found in response data");
                     }
