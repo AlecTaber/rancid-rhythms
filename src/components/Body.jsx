@@ -21,18 +21,25 @@ const fetchAlbums = async (type) => {
   return [];
 };
 
-const fetchUserReviews = async (token) => {
-  const response = await fetch("http://localhost:5001/reviews/user", {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to fetch user reviews");
+const fetchUserReviews = async (setUserReviews) => {
+  const token = localStorage.getItem("token");
+  if (!token) {
+    navigate("/signin");
+    return;
   }
-  return response.json();
+  try {
+    const response = await fetch("http://localhost:5001/reviews/user", {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const reviews = await response.json();
+    console.log("Fetched reviews with albums:", reviews);
+    setUserReviews(reviews);  // Now we can set reviews correctly
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+  }
 };
 
 
@@ -56,12 +63,11 @@ const Body = ({ section }) => {
     const getUserReviews = async () => {
       const token = localStorage.getItem("token");
       if (!token) {
-        navigate("/signin"); // Redirect to signin if no token found
+        navigate("/signin");
         return;
       }
       try {
-        const reviews = await fetchUserReviews(token);
-        setUserReviews(reviews);
+        await fetchUserReviews(setUserReviews);  // Pass setUserReviews as an argument here
       } catch (error) {
         console.error("Error fetching reviews:", error);
       }
@@ -142,19 +148,15 @@ const Body = ({ section }) => {
           {/* Reviews section */}
           <h3 className="text-3xl font-semibold text-black mb-4">Your Reviews</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {userReviews.length === 0 ? (
+            {(!userReviews || userReviews.length === 0) ? (
               <p className="text-lg text-black">You haven't left any reviews yet.</p>
             ) : (
               userReviews.map((review) => (
-                <div
-                  key={review.id}
-                  className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300"
-                >
-                  {/* Conditionally render Album info if it's available */}
+                <div key={review.id} className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition duration-300">
                   {review.Album ? (
                     <>
                       <img
-                        src={review.Album.coverUrl || 'default-cover-url.jpg'}  // Use album cover or a default image
+                        src={review.Album.coverUrl || 'default-cover-url.jpg'}  // Ensure coverUrl is used correctly
                         alt={review.Album.title}
                         className="w-full h-64 object-cover rounded-t-lg mb-4"
                       />
@@ -165,7 +167,7 @@ const Body = ({ section }) => {
                   ) : (
                     <>
                       <img
-                        src="default-cover-url.jpg"  // Default image if album data is missing
+                        src="default-cover-url.jpg"  // Fallback image if album data is missing
                         alt="Unknown Album"
                         className="w-full h-64 object-cover rounded-t-lg mb-4"
                       />
@@ -184,7 +186,6 @@ const Body = ({ section }) => {
                       </span>
                     ))}
                   </div>
-
                   <p className="text-gray-700 mt-2">{review.review}</p>
                 </div>
               ))
