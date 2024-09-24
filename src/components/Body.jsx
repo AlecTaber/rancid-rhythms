@@ -60,7 +60,7 @@ const Body = ({ section }) => {
   }, [section]);
 
   const handleAlbumClick = (albumId) => {
-    navigate(`/AlbumDetails${albumId}`);
+    navigate(`/album/${albumId}`);
   };
 
   // Fetch user reviews for the profile page
@@ -69,6 +69,18 @@ const Body = ({ section }) => {
       fetchUserReviews(setUserReviews, navigate);
     }
   }, [section]);
+
+  const renderStarRating = (rating) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <span key={i} className={`text-2xl mx-1 ${rating >= i ? 'text-yellow-500' : 'text-gray-300'}`}>
+          ★
+        </span>
+      );
+    }
+    return stars;
+  };
 
   switch (section) {
     case "home":
@@ -101,9 +113,9 @@ const Body = ({ section }) => {
                   <p className="mt-4 text-center font-semibold text-black">
                     {album.title}
                   </p>
-                  <p className="text-center text-gray-500">
-                    Average Rating: {album.averageRating}
-                  </p>
+                  <div className="text-center">
+                    {renderStarRating(Math.round(album.averageRating))}
+                  </div>
                 </div>
               ))
             ) : (
@@ -111,7 +123,7 @@ const Body = ({ section }) => {
             )}
           </div>
 
-// Lowest Rated Albums Section
+          {/* Lowest Rated Albums Section */}
           <h3 className="text-2xl font-semibold text-black mb-4">
             Lowest Rated Albums
           </h3>
@@ -131,9 +143,9 @@ const Body = ({ section }) => {
                   <p className="mt-4 text-center font-semibold text-black">
                     {album.title}
                   </p>
-                  <p className="text-center text-gray-500">
-                    Average Rating: {album.averageRating}
-                  </p>
+                  <div className="text-center">
+                    {renderStarRating(Math.round(album.averageRating))}
+                  </div>
                 </div>
               ))
             ) : (
