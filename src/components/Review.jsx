@@ -7,6 +7,7 @@ const Review = ({ albumTitle, albumArtist, albumId }) => {
     const [review, setReview] = useState('');
     const [rating, setRating] = useState(0);
     const [reviewsList, setReviewsList] = useState([]);
+    const [albumCoverUrl, setAlbumCoverUrl] = useState('');
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
 
@@ -40,28 +41,53 @@ const Review = ({ albumTitle, albumArtist, albumId }) => {
 
     useEffect(() => {
         if (albumId) {
-            console.log("Fetching reviews for albumId:", albumId);
-            fetch(`http://localhost:5001/reviews/album/${albumId}`, {
+            console.log("Fetching data for albumId:", albumId);
+    
+            // Define the two fetch requests: one for reviews, one for the album cover
+            const fetchReviews = fetch(`http://localhost:5001/reviews/album/${albumId}`, {
                 method: 'GET',
-            })
-            .then((response) => {
+            }).then((response) => {
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error(`HTTP error fetching reviews! status: ${response.status}`);
                 }
                 return response.json();
-            })
-            .then((data) => {
-                console.log("Fetched reviews:", data); // Add this for debugging
-                if (Array.isArray(data)) {
-                    setReviewsList(data); // Set only if it's an array
-                } else {
-                    setReviewsList([]); // Default to an empty array
-                }
-            })
-            .catch((error) => {
-                console.error('Error fetching reviews:', error);
-                setReviewsList([]); // Default to an empty array in case of an error
             });
+    
+            const fetchAlbumCover = fetch(`https://musicbrainz.org/ws/2/release/${albumId}?fmt=json`)
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error fetching album details! status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    const coverUrl = data['cover-art-archive']?.front
+                        ? `https://coverartarchive.org/release/${albumId}/front`
+                        : 'default-cover-url.jpg'; // Fallback if no cover is found
+                    return coverUrl;
+                });
+    
+            // Use Promise.all to execute both fetch requests concurrently
+            Promise.all([fetchReviews, fetchAlbumCover])
+                .then(([reviewsData, coverUrl]) => {
+                    console.log("Fetched reviews:", reviewsData);
+                    console.log("Fetched coverUrl:", coverUrl);
+    
+                    // Set reviews only if the data is an array
+                    if (Array.isArray(reviewsData)) {
+                        setReviewsList(reviewsData);
+                    } else {
+                        setReviewsList([]);
+                    }
+    
+                    // Set the album cover URL
+                    setAlbumCoverUrl(coverUrl);
+                })
+                .catch((error) => {
+                    console.error('Error fetching data:', error);
+                    setReviewsList([]); // Default to an empty array in case of an error
+                    setAlbumCoverUrl('default-cover-url.jpg'); // Fallback cover URL
+                });
         }
     }, [albumId]);
 
@@ -82,6 +108,7 @@ const Review = ({ albumTitle, albumArtist, albumId }) => {
             title: albumTitle,
             artist: albumArtist,
             musicBrainzId: albumId,
+            coverUrl: albumCoverUrl,
         });
 
         // Use the dynamic albumTitle and albumMbid from the MusicBrainz API search result
@@ -98,6 +125,7 @@ const Review = ({ albumTitle, albumArtist, albumId }) => {
                     title: albumTitle,
                     artist: albumArtist,
                     musicBrainzId: albumId,
+                    coverUrl: albumCoverUrl,
                 }),
             })
                 .then((response) => {

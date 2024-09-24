@@ -22,25 +22,27 @@ const getReviewsByAlbum = async (req, res) => {
 // Get reviews by user
 const getReviewsByUser = async (req, res) => {
     try {
-        const reviews = await Review.findAll({
-            where: { userId: req.user.id },
-            include: [
-                {
-                    model: User,
-                    attributes: ['username'],
-                },
-                //Temporary removal of Album model to test reviews
-                {
-                    model: Album,
-                    attributes: ['title'],
-                },
-            ],
-        });
-        res.json(reviews);
+      const reviews = await Review.findAll({
+        where: { userId: req.user.id },  
+        include: [
+          {
+            model: Album,
+            attributes: ['title', 'coverUrl'],  // Ensure coverUrl is included here
+          },
+          {
+            model: User,
+            attributes: ['username'],  // Include username from the User model
+          },
+        ],
+      });
+  
+      console.log("Fetched reviews: ", JSON.stringify(reviews, null, 2));
+  
+      res.json(reviews);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message });
     }
-}
+  };
 
 // Add a new review
 const addReview = async (req, res) => {
@@ -50,7 +52,7 @@ const addReview = async (req, res) => {
     const userId = req.user.id; // The authenticated user's ID
 
     // Check if required fields are present
-    if (!title || !artist || !rating || !review || !musicBrainzId) {
+    if (!title || !artist || !rating || !review || !musicBrainzId || !coverUrl) {
         return res.status(400).json({ error: "All fields are required." });
     }
 
