@@ -93,7 +93,10 @@ const AlbumDetails = () => {
 
       <div className="md:col-span-3 bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition duration-300">
         <h2 className="text-xl font-semibold mb-4">Reviews</h2>
-        <Review />
+        <Review
+          albumTitle={album.title || 'Album Title'}
+          albumArtist={album["artist-credit"]?.[0]?.name || 'Artist Name'}
+        />
       </div>
     </div>
   );
