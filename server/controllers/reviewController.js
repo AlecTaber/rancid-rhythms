@@ -1,5 +1,6 @@
 import db from '../models/index.js';  // Correctly import the models
-const { Review, Album, User } = db;
+const { Review, Album, User, sequelize } = db;
+
 
 // Get reviews by album
 const getReviewsByAlbum = async (req, res) => {
@@ -96,4 +97,47 @@ const addReview = async (req, res) => {
     }
 };
 
-export { addReview, getReviewsByAlbum, getReviewsByUser };
+// Get the highest-rated albums
+const getHighestRatedAlbums = async (req, res) => {
+    try {
+      const query = `
+        SELECT a."musicBrainzId", a."title", a."coverUrl", AVG(r."rating") as "averageRating"
+        FROM "Albums" a
+        JOIN "Reviews" r ON a."musicBrainzId" = r."albumId"
+        GROUP BY a."musicBrainzId", a."title", a."coverUrl"
+        ORDER BY "averageRating" DESC
+        LIMIT 3;
+      `;
+  
+      // Use sequelize.query to run the raw SQL query
+      const [results] = await sequelize.query(query);
+  
+      res.status(200).json(results);
+    } catch (error) {
+      console.error("Error fetching highest-rated albums:", error);
+      res.status(500).json({ error: error.message });
+    }
+  };
+  
+  // Get the lowest-rated albums
+  const getLowestRatedAlbums = async (req, res) => {
+    try {
+      const query = `
+        SELECT a."musicBrainzId", a."title", a."coverUrl", AVG(r."rating") as "averageRating"
+        FROM "Albums" a
+        JOIN "Reviews" r ON a."musicBrainzId" = r."albumId"
+        GROUP BY a."musicBrainzId", a."title", a."coverUrl"
+        ORDER BY "averageRating" ASC
+        LIMIT 3;
+      `;
+  
+      const [results] = await sequelize.query(query);
+  
+      res.status(200).json(results);
+    } catch (error) {
+      console.error("Error fetching lowest-rated albums:", error);
+      res.status(500).json({ error: error.message });
+    }
+  };
+  
+export { addReview, getReviewsByAlbum, getReviewsByUser, getHighestRatedAlbums, getLowestRatedAlbums };  // Export the functions
