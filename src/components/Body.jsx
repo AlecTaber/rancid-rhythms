@@ -95,7 +95,7 @@ const Body = ({ section }) => {
 
           {/* Highest Rated Albums */}
           <h3 className="text-2xl font-semibold text-black mb-4">
-            Highest Rated Albums
+            Albums that Sound Good On Full Blast
           </h3>
           <div className="album-section grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 mb-8">
             {Array.isArray(highestRatedAlbums) && highestRatedAlbums.length > 0 ? (
@@ -125,7 +125,7 @@ const Body = ({ section }) => {
 
           {/* Lowest Rated Albums Section */}
           <h3 className="text-2xl font-semibold text-black mb-4">
-            Lowest Rated Albums
+            Albums That Sound Good on Mute
           </h3>
           <div className="album-section grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {Array.isArray(lowestRatedAlbums) && lowestRatedAlbums.length > 0 ? (
