@@ -158,7 +158,7 @@ const Body = ({ section }) => {
     case "profile":
       return (
         <section className="p-8 bg-gradient-to-br from-green-600 to-green-200 min-h-screen">
-          <h2 className="text-4xl font-bold text-black mb-6">Your Profile</h2>
+          <h2 className="text-4xl font-extrabold text-black mb-6 ">Your Profile</h2>
           <p className="text-lg text-black mb-8">Here's where you can see your reviews.</p>
 
           {/* Reviews section */}
