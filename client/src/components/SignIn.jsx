@@ -8,7 +8,7 @@ const SignIn = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await fetch('http://localhost:5001/users/login', {
+        const response = await fetch('/api/users/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
@@ -53,7 +53,8 @@ const SignIn = () => {
                     </button>
                 </form>
                 <p className="text-center mt-4 text-black">
-                    Don't have an account? <a href="/signup" className="text-green-600">Sign Up</a>
+                    Don't have an account? <span onClick={()=>navigate("/signup")} className="text-green-600">Sign Up</span>
+                    
                 </p>
             </div>
         </section>

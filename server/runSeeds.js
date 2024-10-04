@@ -9,7 +9,7 @@ import { up as seedUsers } from './seeders/userSeeds.js';
 (async () => {
   try {
     // Sync the database
-    await sequelize.sync();  // Ensure sequelize is correctly accessed here
+    await sequelize.sync({force: true});  // Ensure sequelize is correctly accessed here
 
     // Run each seeder manually
     console.log('Seeding albums...');

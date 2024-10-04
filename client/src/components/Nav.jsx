@@ -1,8 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import SearchBar from './SearchBar';
-import SignUp from './SignUp';
-import SignIn from './SignIn';
 
 const Nav = () => {
   return (

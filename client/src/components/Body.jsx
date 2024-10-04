@@ -1,48 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-const fetchHighestRatedAlbums = async (setHighestRatedAlbums) => {
-  try {
-    const response = await fetch("http://localhost:5001/reviews/highest-rated");
-    const data = await response.json();
-    setHighestRatedAlbums(data);
-  } catch (error) {
-    console.error("Error fetching highest-rated albums:", error);
-    setHighestRatedAlbums([]);  // Set an empty array in case of an error
-  }
-};
 
-const fetchLowestRatedAlbums = async (setLowestRatedAlbums) => {
-  try {
-    const response = await fetch("http://localhost:5001/reviews/lowest-rated");
-    const data = await response.json();
-    setLowestRatedAlbums(data);
-  } catch (error) {
-    console.error("Error fetching lowest-rated albums:", error);
-    setLowestRatedAlbums([]);  // Set an empty array in case of an error
-  }
-};
-
-const fetchUserReviews = async (setUserReviews) => {
-  const token = localStorage.getItem("token");
-  if (!token) {
-    navigate("/signin");
-    return;
-  }
-  try {
-    const response = await fetch("http://localhost:5001/reviews/user", {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    const reviews = await response.json();
-    console.log("Fetched reviews with albums:", reviews);
-    setUserReviews(reviews);  // Now we can set reviews correctly
-  } catch (error) {
-    console.error("Error fetching reviews:", error);
-  }
-};
 
 
 
@@ -52,23 +11,70 @@ const Body = ({ section }) => {
   const [lowestRatedAlbums, setLowestRatedAlbums] = useState([]);
   const navigate = useNavigate();
 
+  const fetchHighestRatedAlbums = async () => {
+    try {
+      const response = await fetch("/api/reviews/highest-rated");
+      const data = await response.json();
+      setHighestRatedAlbums(data);
+    } catch (error) {
+      console.error("Error fetching highest-rated albums:", error);
+      setHighestRatedAlbums([]);  // Set an empty array in case of an error
+    }
+  };
+  
+  const fetchLowestRatedAlbums = async () => {
+    console.log("Fetching lowest-rated albums...");
+    try {
+      const response = await fetch("/api/reviews/lowest-rated", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+      console.log("Response:", data);
+      setLowestRatedAlbums([...data]);
+    } catch (error) {
+      console.error("Error fetching lowest-rated albums:", error);
+      setLowestRatedAlbums([]);  // Set an empty array in case of an error
+    }
+  };
+  
+  const fetchUserReviews = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/signin");
+      return;
+    }
+    try {
+      const response = await fetch("/api/reviews/user", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const reviews = await response.json();
+      console.log("Fetched reviews with albums:", reviews);
+      setUserReviews(reviews);  // Now we can set reviews correctly
+    } catch (error) {
+      console.error("Error fetching reviews:", error);
+    }
+  };
+
   useEffect(() => {
-    if (section === "home") {
-      fetchHighestRatedAlbums(setHighestRatedAlbums);
-      fetchLowestRatedAlbums(setLowestRatedAlbums);
+    console.log("Section changed:", section);
+    if (section === "profile") {
+      fetchUserReviews();
+    }
+    else {
+      fetchHighestRatedAlbums();
+      fetchLowestRatedAlbums();
     }
   }, [section]);
 
   const handleAlbumClick = (albumId) => {
     navigate(`/album/${albumId}`);
   };
-
-  // Fetch user reviews for the profile page
-  useEffect(() => {
-    if (section === "profile") {
-      fetchUserReviews(setUserReviews, navigate);
-    }
-  }, [section]);
 
   const renderStarRating = (rating) => {
     const stars = [];

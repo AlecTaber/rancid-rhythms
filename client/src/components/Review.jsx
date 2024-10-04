@@ -14,7 +14,7 @@ const Review = ({ albumTitle, albumArtist, albumId }) => {
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
-            fetch('http://localhost:5001/reviews/user', {
+            fetch('/api/reviews/user', {
                 method: 'GET',
                 headers: {
                     'Authorization': `Bearer ${token}`,
@@ -44,7 +44,7 @@ const Review = ({ albumTitle, albumArtist, albumId }) => {
             console.log("Fetching data for albumId:", albumId);
     
             // Define the two fetch requests: one for reviews, one for the album cover
-            const fetchReviews = fetch(`http://localhost:5001/reviews/album/${albumId}`, {
+            const fetchReviews = fetch(`/api/reviews/album/${albumId}`, {
                 method: 'GET',
             }).then((response) => {
                 if (!response.ok) {
@@ -113,7 +113,7 @@ const Review = ({ albumTitle, albumArtist, albumId }) => {
 
         // Use the dynamic albumTitle and albumMbid from the MusicBrainz API search result
         if (review && rating > 0) {
-            fetch('http://localhost:5001/reviews', {
+            fetch('/api/reviews', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

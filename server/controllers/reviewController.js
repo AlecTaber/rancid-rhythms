@@ -121,6 +121,7 @@ const getHighestRatedAlbums = async (req, res) => {
   
   // Get the lowest-rated albums
   const getLowestRatedAlbums = async (req, res) => {
+    console.log("Fetching lowest-rated albums...");
     try {
       const query = `
         SELECT a."musicBrainzId", a."title", a."coverUrl", AVG(r."rating") as "averageRating"
