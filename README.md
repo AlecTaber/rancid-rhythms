@@ -110,8 +110,8 @@ N/A
 
 **Ashlin Lee**
 
-- GitHub:
-- Email:
+- GitHub: [AshlinLee](https://github.com/ashlinlee98)
+- Email:[ashlinlee98@gmail.com](mailto:ashlinlee98@gmail.com)
 
 **Jacob Menlove**
 
