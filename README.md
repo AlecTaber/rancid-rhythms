@@ -56,30 +56,25 @@
 ## Code Snippets
 
 - **Front End**:
+![MusicBrainz API code snippet](./code_snippets/MusicBrainz_api.png)
+    Uses a link, including an id, to retrieve album information from the MusicBrainz API and save it to our system.
 
+![iTunes API code snippet](./code_snippets/Itunes_api.png)
+    Uses a link to fetch a 30 second preview from one of the songs from the displayed album.
 
+![iTunes API partial information code snippet](./code_snippets/Itunes_partialmatch.png)
+    Searches for a 30 song preview for albums that we don't have all of the information for.
 
+![Highest Rated Albums code snippet](./code_snippets/highest_rated.png)
+    Retrieves and displays the albums with highest ratings in our database (based on reviews left on our website). There is similar code that does this for lowest rated albums.
 
+![Submit Review code snippet](./code_snippets/submit_review.png)
+    Check if user is logged in. If not, redirect them to make an account. If user is logged in, add the review to our database.
 
+![Add Review code snippet](./code_snippets/add_review.png)
+    Function that actually adds the reviews and relevant information to the database.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+![Fetch Reviews code ]
 
 ## Credits
 
