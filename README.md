@@ -55,30 +55,49 @@
 
 ## Code Snippets
 
-Code snippets and descriptions here.
+- **Front End**:
+![MusicBrainz API code snippet](./code_snippets/MusicBrainz_api.png)
+    Uses a link, including an id, to retrieve album information from the MusicBrainz API and save it to our system.
 
+![iTunes API code snippet](./code_snippets/Itunes_api.png)
+    Uses a link to fetch a 30 second preview from one of the songs from the displayed album.
 
+![iTunes API partial information code snippet](./code_snippets/Itunes_partialmatch.png)
+    Searches for a 30 song preview for albums that we don't have all of the information for.
 
+![Highest rated albums front end code snippet](./code_snippets/FE_highest_rated.png)
+    Retrieves and displays the albums with highest ratings in our database (based on reviews left on our website). There is similar code that does this for lowest rated albums.
 
+![Submit review code snippet](./code_snippets/submit_review.png)
+    Check if user is logged in. If not, redirect them to make an account. If user is logged in, add the review to our database.
 
+![Add review front end code snippet](./code_snippets/FE_add_review.png)
+    Function that actually adds the reviews and relevant information to the database.
 
+![Fetch reviews code snippet](./code_snippets/fetch_reviews.png)
+    Fetches reviews from local storage. These are displayed on the user's profile page.
 
+- **Back End**:
+    ![JWT authentication middleware code snippet](./code_snippets/jwt-auth.png)
+        How we handle JWT authentication and validating users.
+    
+    ![Album model code snippet](./code_snippets/album-model.png)
+        The information that we are storing - some of which is pulled from the MusicBrainz API. Albums are stored when a user leaves a review for that album.
+    
+    ![Albums controller code snippet](./code_snippets/albums_controller.png)
+        The get methods we have in our controller for retrieving album information from our database.
 
+    ![Highest rated albums back end code snippet](./code_snippets/BE_highest_rated.png)
+        The back end code that handles retrieving the highest rated albums in our database.
+    
+    ![Add review back end code snippet](./code_snippets/BE_add_review.png)
+        The function in the back end that handles adding a review to our database. Also adds the album to our database if it isn't already there.
 
+    ![Get reviews by user code snippet](./code_snippets/get_reviews_by_user.png)
+        Back end code that retrieves all the reviews a specific user has left so that they can be displayed on the user's profile page.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    ![Get reviews by album code snippet](./code_snippets/get_reviews_by_album.png)
+        How the back end handles fetching all reviews that pertain to one specific album so that they can be displayed when that album is viewed by other users.
 
 ## Credits
 
@@ -110,8 +129,8 @@ N/A
 
 **Ashlin Lee**
 
-- GitHub:
-- Email:
+- GitHub: [AshlinLee](https://github.com/ashlinlee98)
+- Email:[ashlinlee98@gmail.com](mailto:ashlinlee98@gmail.com)
 
 **Jacob Menlove**
 

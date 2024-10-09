@@ -11,14 +11,4 @@ const getAlbumById = async (req, res) => {
     res.json(album);
 }     
 
-/* const addAlbum = async (albumData) => {
-    try {
-        const album = await Album.create(albumData);
-        return album; // Return the created album
-    } catch (error) {
-        console.error("Error adding album:", error);
-        throw new Error("Failed to create album"); // Handle error appropriately
-    }
-};*/
-
 export { getAlbums, getAlbumById };
